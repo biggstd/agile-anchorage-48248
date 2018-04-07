@@ -1,5 +1,5 @@
 # project/server/main/views.py
-from project.server import port
+from project.server import port, sockets
 
 from flask import render_template, Blueprint
 from bokeh.embed import server_document
@@ -22,7 +22,8 @@ def about():
 # @login_required
 def bokeh_demo():
     # url = 'localhost:{0}/bokehDemo'.format(port)
-    url = "https://agile-anchorage-48248.herokuapp.com:{0}/bokehDemo".format(port)
+    url = "{0}:{1}/bokehDemo".format(sockets, port)
+    # url = "https://agile-anchorage-48248.herokuapp.com:{0}/bokehDemo".format(port)
     script = server_document(url=url)
     print('Bokeh route called.', url)
     print(script)
