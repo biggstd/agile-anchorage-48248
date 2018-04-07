@@ -61,7 +61,7 @@ bokeh_http = HTTPServer(bokeh_tornado)
 # each process will listen on its own port
 sockets, port = bind_sockets(
     "172.16.0.1",
-    0
+    os.environ["PORT"]
 )
 print('sockets: ', sockets)
 bokeh_http.add_sockets(sockets)
