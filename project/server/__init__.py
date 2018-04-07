@@ -46,7 +46,8 @@ bokeh_tornado = BokehTornado(
         "127.0.0.1:5000",
         "localhost:8000",
         "http://localhost:8000",
-        "0.0.0.0:5000"
+        "0.0.0.0",
+        "https://agile-anchorage-48248.herokuapp.com/",
     ],
     # port=5006
 )
