@@ -59,9 +59,10 @@ bokeh_http = HTTPServer(bokeh_tornado)
 
 # This is so that if this app is run using something like "gunicorn -w 4" then
 # each process will listen on its own port
+
 sockets, port = bind_sockets(
     "172.30.239.98",
-    os.environ["PORT"]
+    0
 )
 print('sockets: ', sockets)
 bokeh_http.add_sockets(sockets)
