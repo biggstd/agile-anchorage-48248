@@ -131,15 +131,14 @@ def create_data():
         # populate them.
         for idx, row in df.iterrows():
             row = row.to_dict()
-            # print(row)
-            print(type(row))
 
             # Create a dictionary of the matching names: values.
-            csv_vals = {c: row[c] for c in matching_col_names}
+            # csv_vals = {c: row[c] for c in matching_col_names}
             prop_vals = {m: prop_dict[m] for m in match_prop_dict}
-            print(csv_vals)
+            print(prop_vals)
+            print(row)
             nmr_entry = NMR_LitData(
-                **csv_vals,
+                **row,
                 **prop_vals
             )
             db.session.add(nmr_entry)
