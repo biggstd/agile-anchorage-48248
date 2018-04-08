@@ -119,7 +119,7 @@ def create_data():
         df = pd.read_csv(base_path + path)
 
         # Get the column names.
-        col_names = set(df)
+        col_names = set(list(df))
 
         # Get the matching columns.
         matching_col_names = col_names.intersection(sql_col_names)
