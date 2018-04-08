@@ -168,7 +168,7 @@ def nmrdemo():
     rd = redis.from_url(os.environ.get("REDIS_URL"))
 
     # Save the data to the redis server with the hash as a key.
-    rd.set(my_hash, df)
+    rd.set(my_hash, df.to_msgpack(compress='zlib'))
 
     url = "https://secret-cove-20095.herokuapp.com/nmrapp"
 
