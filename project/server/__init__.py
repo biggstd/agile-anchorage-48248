@@ -21,6 +21,7 @@ from bokeh.application import Application
 from bokeh.application.handlers import DirectoryHandler
 from bokeh.themes import Theme
 from tornado.ioloop import IOLoop
+from threading import Thread
 
 
 import pandas as pd
@@ -126,3 +127,6 @@ def bk_worker():
     print(BOKEH_PORTS)
     server.start()
     server.io_loop.start()
+
+
+Thread(target=bk_worker).start()
