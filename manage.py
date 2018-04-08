@@ -8,7 +8,7 @@ import os
 
 from flask.cli import FlaskGroup
 
-from project.server import create_app, db, bk_worker
+from project.server import create_app, db
 from project.server.models import User
 import subprocess
 import sys

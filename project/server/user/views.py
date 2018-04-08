@@ -143,7 +143,7 @@ def create_data():
     db.session.commit()
 
 
-@user_blueprint.route('/demo', methods=['GET'])
+@user_blueprint.route('/demo/', methods=['GET'])
 # @login_required
 def bokeh_demo():
     # Generate the demo data.
@@ -163,9 +163,10 @@ def bokeh_demo():
     # url = url_for('/bokeh_apps/demo')
     # f"http://localhost:{BOKEH_PORTS[0]}/demo"
     # SERVER_NAME = "agile-anchorage-48248.herokuapp.com"
-    SERVER_NAME = "0.0.0.0"
-    bokeh_port = str(BOKEH_PORTS[0])
-    url = SERVER_NAME + f":{bokeh_port}/bokeh_apps/demo"
-    print(url)
+    url = "https://secret-cove-20095.herokuapp.com/app"
+    # SERVER_NAME = "http://0.0.0.0"
+    # bokeh_port = str(BOKEH_PORTS[0])
+    # url = SERVER_NAME + f":{bokeh_port}/bokeh_apps/demo/"
+    # print(url)
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
