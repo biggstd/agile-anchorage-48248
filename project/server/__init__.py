@@ -12,8 +12,21 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 
+from bokeh.embed import server_document
+from bokeh.layouts import column
+from bokeh.models import ColumnDataSource, Slider
+from bokeh.plotting import figure
+from bokeh.server.server import Server
+from bokeh.application import Application
+from bokeh.application.handlers import DirectoryHandler
+from bokeh.themes import Theme
+from tornado.ioloop import IOLoop
+
 
 import pandas as pd
+
+
+BOKEH_PORTS = list()
 
 # instantiate the extensions
 login_manager = LoginManager()
@@ -85,3 +98,31 @@ def create_app(script_info=None):
         return {'app': app, 'db': db}
 
     return app
+
+
+def bk_worker():
+
+    # Declare the absolute path to the demo application.
+    demo_path = os.path.abspath("project/bokeh_apps/demo")
+
+    # Declare the dictionary of applications to launch.
+    apps = {
+        '/demo': Application(DirectoryHandler(filename=demo_path)),
+    }
+    # Can't pass num_procs > 1 in this configuration. If you need to run multiple
+    # processes, see e.g. flask_gunicorn_embed.py
+    # port = os.environ.get('PORT') or "5006"
+    server = Server(
+        apps,
+        io_loop=IOLoop(),
+        port=0,
+        allow_websocket_origin=[
+            "localhost:5000",
+            "0.0.0.0:5000",
+        ]
+    )
+
+    BOKEH_PORTS.append(server.port)
+    print(BOKEH_PORTS)
+    server.start()
+    server.io_loop.start()

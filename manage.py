@@ -7,10 +7,11 @@ import coverage
 
 from flask.cli import FlaskGroup
 
-from project.server import create_app, db
+from project.server import create_app, db, bk_worker
 from project.server.models import User
 import subprocess
 import sys
+from threading import Thread
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -86,4 +87,5 @@ def flake():
 
 if __name__ == '__main__':
     print("main called")
+    Thread(target=bk_worker).start()
     cli()

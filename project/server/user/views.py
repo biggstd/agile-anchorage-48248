@@ -14,7 +14,7 @@ import os
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
-from project.server import bcrypt, db
+from project.server import bcrypt, db, BOKEH_PORTS
 from project.server.models import User, NMR_LitData
 from project.server.user.forms import LoginForm, RegisterForm
 
@@ -143,22 +143,24 @@ def create_data():
     db.session.commit()
 
 
-@user_blueprint.route('/bokeh_demo')
-@login_required
+@user_blueprint.route('/demo', methods=['GET'])
+# @login_required
 def bokeh_demo():
     # Generate the demo data.
-    create_data()
+    # create_data()
 
     # Pull all nmr data.
-    my_data = pd.read_sql('nmr_lit_data', db)
-    print(my_data)
+    # my_data = pd.read_sql('nmr_lit_data', db)
+    # print(my_data)
     # Write this to redis with a hash.
-    my_hash = "T35TH45H"
-    rd = redis.from_url(os.environ.get("REDIS_URL"))
+    # my_hash = "T35TH45H"
+    # rd = redis.from_url(os.environ.get("REDIS_URL"))
 
     # Save the data to the redis server with the hash as a key.
-    rd.set(my_hash, my_data)
-
-    script = server_document(
-        url=f'https://secret-cove-20095.herokuapp.com/nmrapp/?hash={my_hash}')
+    # rd.set(my_hash, my_data)
+    # port = os.environ.get('PORT') or "5006"
+    # global BOKEH_PORTS
+    url = f"http://localhost:{BOKEH_PORTS[0]}/demo"
+    print(url)
+    script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
