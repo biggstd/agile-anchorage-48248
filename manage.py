@@ -89,5 +89,5 @@ def flake():
 if __name__ == '__main__':
     print("main called")
     Thread(target=bk_worker).start()
-    app.run(port=os.environ.get('PORT') or 5000)
+    app.run()
     # cli()
