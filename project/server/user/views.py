@@ -147,6 +147,16 @@ def create_data():
 # @login_required
 def bokeh_demo():
     # Generate the demo data.
+    url = "https://secret-cove-20095.herokuapp.com/app"
+
+    script = server_document(url=url)
+    return render_template('user/bokeh_demo.html', script=script)
+
+
+@user_blueprint.route('/nmrdemo/', methods=['GET'])
+# @login_required
+def nmrdemo():
+    # Generate the demo data.
     create_data()
     sql = '''SELECT * FROM nmr_lit_data'''
     conn = db.engine.connect().connection
@@ -160,7 +170,7 @@ def bokeh_demo():
     # Save the data to the redis server with the hash as a key.
     rd.set(my_hash, df)
 
-    url = "https://secret-cove-20095.herokuapp.com/app"
+    url = "https://secret-cove-20095.herokuapp.com/nmrapp"
 
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
