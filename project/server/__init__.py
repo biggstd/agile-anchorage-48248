@@ -115,8 +115,10 @@ def bk_worker():
     # port = os.environ.get('PORT') or "5006"
     server = Server(
         apps,
+        prefix='bokeh_apps',
         io_loop=IOLoop(),
         port=0,
+        use_xheaders=True,
         allow_websocket_origin=[
             "localhost:5000",
             "0.0.0.0:5000",
@@ -125,6 +127,7 @@ def bk_worker():
 
     BOKEH_PORTS.append(server.port)
     print(BOKEH_PORTS)
+    print(server.address)
     server.start()
     server.io_loop.start()
 

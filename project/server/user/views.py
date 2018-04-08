@@ -160,7 +160,10 @@ def bokeh_demo():
     # rd.set(my_hash, my_data)
     # port = os.environ.get('PORT') or "5006"
     # global BOKEH_PORTS
-    url = f"http://localhost:{BOKEH_PORTS[0]}/demo"
+    # url = url_for('/bokeh_apps/demo')
+    # f"http://localhost:{BOKEH_PORTS[0]}/demo"
+    base_url = request.url_root
+    url = base_url + "bokeh_apps/demo"
     print(url)
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
