@@ -130,8 +130,9 @@ def create_data():
         # Iterate through a zip of the matched values, and
         # populate them.
         for idx, row in df.iterrows():
-            print(row)
-            print(type(row))
+            # print(row)
+            # print(type(row))
+            row = row.to_dict()
 
             # Create a dictionary of the matching names: values.
             csv_vals = {c: row[c] for c in matching_col_names}
