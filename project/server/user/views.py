@@ -149,15 +149,16 @@ def bokeh_demo():
     # Generate the demo data.
     create_data()
 
+    data = NMR_LitData.query.all()
+    df = pd.DataFrame(data)
     # Pull all nmr data.
-    my_data = pd.read_sql('nmr_lit_data', db.session)
-    print(my_data)
+    print(df)
     # Write this to redis with a hash.
     my_hash = "?hash=T35TH45H"
     rd = redis.from_url(os.environ.get("REDIS_URL"))
 
     # Save the data to the redis server with the hash as a key.
-    rd.set(my_hash, my_data)
+    rd.set(my_hash, df)
 
     url = "https://secret-cove-20095.herokuapp.com/app"
 
