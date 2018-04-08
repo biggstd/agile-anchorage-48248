@@ -40,3 +40,18 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {0}>'.format(self.email)
+
+
+class NMR_LitData(db.Model):
+    """Database for literature nmr data points.
+    """
+    __tablename__ = 'nmr_lit_data'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    doi = db.Column(db.String(255), nullable=True)
+    Al_concentration = db.Column(db.Numeric(), nullable=True)
+    OH_concentration = db.Column(db.Numeric(), nullable=True)
+    CI_concentration = db.Column(db.Numeric(), nullable=True)
+    Al_ppm = db.Column(db.Numeric(), nullable=True)
+    counter_ion = db.Column(db.String(255), nullable=True)
+    Al_source = db.Column(db.String(255), nullable=True)

@@ -1,6 +1,7 @@
 # project/server/config.py
 
 import os
+import redis
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,5 +34,5 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     BCRYPT_LOG_ROUNDS = 13
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/example'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     WTF_CSRF_ENABLED = True

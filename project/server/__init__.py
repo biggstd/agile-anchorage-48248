@@ -2,15 +2,6 @@
 
 
 import os
-from threading import Thread
-from tornado.ioloop import IOLoop
-
-from bokeh.application import Application
-from bokeh.application.handlers import DirectoryHandler
-from tornado.httpserver import HTTPServer
-from bokeh.server.tornado import BokehTornado
-from bokeh.server.util import bind_sockets
-from bokeh.server.server import BaseServer
 
 from flask import Flask, render_template
 from flask_login import LoginManager
@@ -21,6 +12,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 
+
+import pandas as pd
+
 # instantiate the extensions
 login_manager = LoginManager()
 bcrypt = Bcrypt()
@@ -28,53 +22,6 @@ toolbar = DebugToolbarExtension()
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 migrate = Migrate()
-
-print('APP CREATION ---------------------------------------------------')
-# Declare the absolute path to the demo application.
-demo_path = os.path.abspath("bokeh_apps/bokehDemo")
-
-# Declare the dictionary of applications to launch.
-apps = {
-    '/bokehDemo': Application(DirectoryHandler(filename=demo_path)),
-}
-
-# Instantiate the Bokeh server.
-# Allow connections from the Flask application.
-bokeh_tornado = BokehTornado(
-    applications=apps,
-    extra_websocket_origins=[
-        "127.0.0.1:5000",
-        "localhost:8000",
-        "http://localhost:8000",
-        "0.0.0.0",
-        "https://agile-anchorage-48248.herokuapp.com/",
-        "*"
-    ],
-    # port=5006
-)
-
-bokeh_http = HTTPServer(bokeh_tornado)
-# server.start()
-# server.io_loop.start()
-
-# This is so that if this app is run using something like "gunicorn -w 4" then
-# each process will listen on its own port
-
-sockets, port = bind_sockets(
-    "172.30.239.98",
-    0
-)
-print('sockets: ', sockets)
-bokeh_http.add_sockets(sockets)
-
-def bk_worker():
-    io_loop = IOLoop.current()
-    server = BaseServer(io_loop, bokeh_tornado, bokeh_http)
-    server.start()
-    server.io_loop.start()
-
-
-Thread(target=bk_worker).start()
 
 
 def create_app(script_info=None):
@@ -90,6 +37,7 @@ def create_app(script_info=None):
     app_settings = os.getenv(
         'APP_SETTINGS', 'project.server.config.DevelopmentConfig')
     app.config.from_object(app_settings)
+
 
     # set up extensions
     login_manager.init_app(app)

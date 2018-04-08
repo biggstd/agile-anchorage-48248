@@ -12,9 +12,9 @@ from project.server.models import User
 import subprocess
 import sys
 
-
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
+
 
 # code coverage
 COV = coverage.coverage(
@@ -45,14 +45,9 @@ def drop_db():
 @cli.command()
 def create_admin():
     """Creates the admin user."""
-    db.session.add(User(email='biggstd@gmail.com', password='admin', admin=True))
+    db.session.add(User(
+        email='biggstd@gmail.com', password='admin42', admin=True))
     db.session.commit()
-
-
-@cli.command()
-def create_data():
-    """Creates sample data."""
-    pass
 
 
 @cli.command()
@@ -90,5 +85,5 @@ def flake():
 
 
 if __name__ == '__main__':
-    cli()
     print("main called")
+    cli()
