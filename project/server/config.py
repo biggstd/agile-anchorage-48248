@@ -37,4 +37,4 @@ class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     WTF_CSRF_ENABLED = True
     # port = os.environ.get("PORT")
-    SERVER_NAME = "https://agile-anchorage-48248.herokuapp.com"
+    SERVER_NAME = "agile-anchorage-48248.herokuapp.com"
