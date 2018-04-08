@@ -154,7 +154,7 @@ def bokeh_demo():
     # Pull all nmr data.
     print(df)
     # Write this to redis with a hash.
-    my_hash = "/?hash=T35TH45H"
+    my_hash = "T35TH45H"
     rd = redis.from_url(os.environ.get("REDIS_URL"))
 
     # Save the data to the redis server with the hash as a key.
@@ -162,5 +162,5 @@ def bokeh_demo():
 
     url = "https://secret-cove-20095.herokuapp.com/app"
 
-    script = server_document(url=url + my_hash)
+    script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
