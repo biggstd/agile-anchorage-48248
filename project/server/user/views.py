@@ -147,26 +147,19 @@ def create_data():
 # @login_required
 def bokeh_demo():
     # Generate the demo data.
-    # create_data()
+    create_data()
 
     # Pull all nmr data.
-    # my_data = pd.read_sql('nmr_lit_data', db)
-    # print(my_data)
+    my_data = pd.read_sql('nmr_lit_data', db)
+    print(my_data)
     # Write this to redis with a hash.
-    # my_hash = "T35TH45H"
-    # rd = redis.from_url(os.environ.get("REDIS_URL"))
+    my_hash = "?hash=T35TH45H"
+    rd = redis.from_url(os.environ.get("REDIS_URL"))
 
     # Save the data to the redis server with the hash as a key.
-    # rd.set(my_hash, my_data)
-    # port = os.environ.get('PORT') or "5006"
-    # global BOKEH_PORTS
-    # url = url_for('/bokeh_apps/demo')
-    # f"http://localhost:{BOKEH_PORTS[0]}/demo"
-    # SERVER_NAME = "agile-anchorage-48248.herokuapp.com"
+    rd.set(my_hash, my_data)
+
     url = "https://secret-cove-20095.herokuapp.com/app"
-    # SERVER_NAME = "http://0.0.0.0"
-    # bokeh_port = str(BOKEH_PORTS[0])
-    # url = SERVER_NAME + f":{bokeh_port}/bokeh_apps/demo/"
-    # print(url)
-    script = server_document(url=url)
+
+    script = server_document(url=url + my_hash)
     return render_template('user/bokeh_demo.html', script=script)
