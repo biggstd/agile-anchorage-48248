@@ -148,9 +148,9 @@ def create_data():
 def bokeh_demo():
     # Generate the demo data.
     create_data()
-
+    sql = '''SELECT * FROM nmr_lit_data'''
     conn = db.engine.connect().connection
-    df = pd.read_sql_table('nmr_lit_data', conn)
+    df = pd.read_sql_query(sql, conn)
     # Pull all nmr data.
     print(df)
     # Write this to redis with a hash.
