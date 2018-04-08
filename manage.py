@@ -4,6 +4,7 @@
 import unittest
 
 import coverage
+import os
 
 from flask.cli import FlaskGroup
 
@@ -88,4 +89,5 @@ def flake():
 if __name__ == '__main__':
     print("main called")
     Thread(target=bk_worker).start()
-    cli()
+    app.run(port=os.environ.get('PORT') or 5000)
+    # cli()

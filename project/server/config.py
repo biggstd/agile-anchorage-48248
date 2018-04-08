@@ -36,3 +36,5 @@ class ProductionConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     WTF_CSRF_ENABLED = True
+    port = os.environ.get("PORT")
+    SERVER_NAME = f"https://agile-anchorage-48248.herokuapp.com:{port}"
