@@ -162,8 +162,9 @@ def bokeh_demo():
     # global BOKEH_PORTS
     # url = url_for('/bokeh_apps/demo')
     # f"http://localhost:{BOKEH_PORTS[0]}/demo"
-    base_url = request.url_root
-    url = base_url + "bokeh_apps/demo"
+    SERVER_NAME = "agile-anchorage-48248.herokuapp.com"
+    bokeh_port = str(BOKEH_PORTS[0])
+    url = SERVER_NAME + f":{bokeh_port}/bokeh_apps/demo"
     print(url)
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
