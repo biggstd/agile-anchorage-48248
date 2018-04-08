@@ -160,5 +160,5 @@ def bokeh_demo():
     rd.set(my_hash, my_data)
 
     script = server_document(
-        url=f'https://secret-cove-20095.herokuapp.com/app?hash={my_hash}')
+        url=f'https://secret-cove-20095.herokuapp.com/nmrapp')
     return render_template('user/bokeh_demo.html', script=script)
