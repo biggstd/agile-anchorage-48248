@@ -151,7 +151,7 @@ def bokeh_demo():
 
     # Pull all nmr data.
     my_data = pd.read_sql('nmr_lit_data', db)
-
+    print(my_data)
     # Write this to redis with a hash.
     my_hash = "T35TH45H"
     rd = redis.from_url(os.environ.get("REDIS_URL"))
