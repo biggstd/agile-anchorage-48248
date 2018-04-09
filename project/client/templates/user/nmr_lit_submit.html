@@ -6,7 +6,7 @@
 
   <h2>Enter NMR Literature Data</h2>
 
-  {% from "_formhelpers.html" import render_field %}
+  {% from "project.client.templates.user._formhelpers.html" import render_field %}
   <form method=post>
     <dl>
       {{ render_field(form.name) }}
