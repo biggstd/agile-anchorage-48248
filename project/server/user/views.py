@@ -125,7 +125,7 @@ def create_data():
         matching_col_names = col_names.intersection(sql_col_names)
 
         # Get the matching keys from the prop dict.
-        match_prop_dict = sql_col_names.intersection(prop_dict.keys())
+        match_prop_dict = sql_col_names.intersection(set(prop_dict.keys()))
 
         # Iterate through a zip of the matched values, and
         # populate them.
