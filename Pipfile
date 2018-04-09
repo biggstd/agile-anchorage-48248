@@ -30,4 +30,4 @@ Flask-Testing = "*"
 "flake8" = "*"
 
 [requires]
-python_version = "3.6.4"
+python_version = "3.6.5"

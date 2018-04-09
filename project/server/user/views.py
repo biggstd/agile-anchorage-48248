@@ -161,3 +161,13 @@ def nmrdemo():
 
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
+
+
+@user_blueprint.route('/nmrsql/', methods=['GET'])
+# @login_required
+def nmrsql():
+    # Generate the demo data.
+    create_data()
+    url = "https://secret-cove-20095.herokuapp.com/nmrsql"
+    script = server_document(url=url)
+    return render_template('user/bokeh_demo.html', script=script)
