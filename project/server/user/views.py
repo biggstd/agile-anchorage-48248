@@ -106,13 +106,25 @@ def create_data():
         "sipos_2006_talanta_fig_2.csv": {
             "counter_ion": "Na+",
             "doi": "10.1016/j.talanta.2006.02.008"
-        }
+        },
+        "sipos_2006_talanta_fig_3_KOH.csv": {
+            "counter_ion": "K+",
+            "doi": "10.1016/j.talanta.2006.02.008"
+        },
+        "sipos_2006_talanta_fig_3_LiOH.csv": {
+            "counter_ion": "Na+",
+            "doi": "10.1016/j.talanta.2006.02.008"
+        },
+        "sipos_2006_talanta_fig_3_NaOH.csv": {
+            "counter_ion": "Na+",
+            "doi": "10.1016/j.talanta.2006.02.008"
+        },
+        "sipos2006_RSC_table_1.csv": {
+            "counter_ion": "Na+",
+            "doi": "10.1039/b513357b"
+        },
     }
 
-    # Get the sql column names.
-    sql_col_names = {c for c in NMR_LitData.__table__.columns}
-
-    # Read their associated metadata json files.
     # Create the entries in the appropriate databases.
     # Al_concentration,OH_concentration,Al_ppm
     for path, prop_dict in demo_lit_csvs.items():
