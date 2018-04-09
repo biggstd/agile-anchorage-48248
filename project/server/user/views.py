@@ -117,25 +117,14 @@ def create_data():
     # Al_concentration,OH_concentration,Al_ppm
     for path, prop_dict in demo_lit_csvs.items():
         df = pd.read_csv(base_path + path)
-        print(prop_dict)
-        print(type(prop_dict))
-
-        # Get the matching keys from the prop dict.
-        match_prop_keys = sql_col_names.intersection(set(prop_dict.keys()))
-
         # Iterate through a zip of the matched values, and
         # populate them.
         for idx, row in df.iterrows():
             row = row.to_dict()
 
-            # Create a dictionary of the matching names: values.
-            # csv_vals = {c: row[c] for c in matching_col_names}
-            prop_vals = {m: prop_dict[m] for m in match_prop_keys}
-            print(prop_vals)
-            print(row)
             nmr_entry = NMR_LitData(
                 **row,
-                **prop_vals
+                **prop_dict
             )
             db.session.add(nmr_entry)
     db.session.commit()
