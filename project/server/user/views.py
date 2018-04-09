@@ -80,9 +80,15 @@ def success():
 class MyForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     csv = FileField(validators=[FileRequired()])
+    doi = StringField('DOI')
+    Al_concentration = StringField('Al Molarity')
+    OH_concentration = StringField('OH Molarity')
+    CI_concentration = StringField('Counter Ion Molarity')
+    Al_ppm = StringField('Al ppm')
+    counter_ion = StringField('Counter Ion')
+    Al_source = StringField('Aluminum Source')
 
-
-@user_blueprint.route('/nmr_lit_submit', methods=('GET', 'POST'))
+@user_blueprint.route('/nmr_lit_submit/', methods=('GET', 'POST'))
 @login_required
 def nmr_lit_submit():
     form = MyForm()
