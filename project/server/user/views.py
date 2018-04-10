@@ -107,6 +107,7 @@ def nmr_lit_submit():
             uploaded_file = request.files['file']
             filename = secure_filename(uploaded_file.filename)
             df = pd.read_csv(filename)
+            print(df)
             redisConn = redis.from_url(os.environ.get("REDIS_URL"))
             redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
             return render_template(
