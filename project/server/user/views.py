@@ -100,6 +100,8 @@ def nmr_lit_submit():
     if request.method == 'POST':
 
         data = form.csv.data
+        print(data)
+        print(type(data))
         df = pd.read_csv(data)
         print(df)
         redisConn = redis.from_url(os.environ.get("REDIS_URL"))
