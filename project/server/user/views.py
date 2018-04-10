@@ -95,6 +95,7 @@ class MyForm(FlaskForm):
 # @login_required
 def nmr_lit_submit():
     form = MyForm()
+    url = "https://secret-cove-20095.herokuapp.com/nmrapp"
     if form.validate_on_submit():
 
         # Get the csv from the requests object and
@@ -108,8 +109,6 @@ def nmr_lit_submit():
             df = pd.read_csv(filename)
             redisConn = redis.from_url(os.environ.get("REDIS_URL"))
             redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
-            url = "https://secret-cove-20095.herokuapp.com/nmrapp"
-            script = server_document(url=url)
             return render_template(
                 "user/nmr_lit_submit.html",
                 form=form, script=script)
@@ -124,7 +123,9 @@ def nmr_lit_submit():
         db.session.commit()
 
         return redirect('/success')
-    return render_template('user/nmr_lit_submit.html', form=form, script=None)
+
+    script = server_document(url=url)
+    return render_template('user/nmr_lit_submit.html', form=form, script=script)
 
 
 def create_data():
