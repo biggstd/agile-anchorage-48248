@@ -127,20 +127,24 @@ def create_data():
         },
         "sipos_2006_talanta_fig_3_KOH.csv": {
             "counter_ion": "K+",
-            "doi": "10.1016/j.talanta.2006.02.008"
+            "doi": "10.1016/j.talanta.2006.02.008",
+            "Al_concentration": 0.005
         },
         "sipos_2006_talanta_fig_3_LiOH.csv": {
             "counter_ion": "Li+",
-            "doi": "10.1016/j.talanta.2006.02.008"
+            "doi": "10.1016/j.talanta.2006.02.008",
+            "Al_concentration": 0.005
         },
         "sipos_2006_talanta_fig_3_NaOH.csv": {
             "counter_ion": "Na+",
-            "doi": "10.1016/j.talanta.2006.02.008"
+            "doi": "10.1016/j.talanta.2006.02.008",
+            "Al_concentration": 0.005
         },
-        # "sipos2006_RSC_table_1.csv": {
-        #     "counter_ion": "Cs+",
-        #     "doi": "10.1039/b513357b"
-        # },
+        "sipos2006_RSC_table_1.csv": {
+            "counter_ion": "Cs+",
+            "doi": "10.1039/b513357b",
+            "Al_concentration": 3.0
+        },
     }
 
     # Create the entries in the appropriate databases.
