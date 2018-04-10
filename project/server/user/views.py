@@ -107,7 +107,7 @@ def nmr_lit_submit():
             filename = secure_filename(uploaded_file.filename)
             df = pd.read_csv(filename)
             redisConn = redis.from_url(os.environ.get("REDIS_URL"))
-            redisConn.set("key", df.to_msgpack(compress='zlib'))
+            redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
             url = "https://secret-cove-20095.herokuapp.com/nmrapp"
             script = server_document(url=url)
             return render_template(
