@@ -103,9 +103,9 @@ def nmr_lit_submit():
         print(data)
         print(type(data))
         df = pd.read_csv(data)
-        print(df)
         redisConn = redis.from_url(os.environ.get("REDIS_URL"))
         redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
+        script = server_document(url=url)
         return render_template(
             "user/nmr_lit_submit.html",
             form=form, script=script)
