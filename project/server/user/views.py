@@ -151,13 +151,9 @@ def create_data():
         # populate them.
         for idx, row in df.iterrows():
             row = row.to_dict()
-
-            nmr_entry = NMR_LitData(
-                **row,
-                **prop_dict
-            )
+            nmr_entry = NMR_LitData(**row, **prop_dict)
             db.session.add(nmr_entry)
-    db.session.commit()
+        db.session.commit()
 
 
 @user_blueprint.route('/demo/', methods=['GET'])
