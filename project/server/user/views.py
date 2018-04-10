@@ -96,12 +96,8 @@ class MyForm(FlaskForm):
 def nmr_lit_submit():
     form = MyForm()
     url = "https://secret-cove-20095.herokuapp.com/nmrapp"
-    if form.validate_on_submit():
 
-        # Get the csv from the requests object and
-        # read it with pandas.
-        if 'file' not in request.files:
-            flash('No file given.')
+    if request.method == 'POST':
 
         try:
             uploaded_file = request.files['file']
@@ -117,13 +113,13 @@ def nmr_lit_submit():
         except e as error:
             flash(f'Failed to read file given.\n{error}')
 
-        nmr_form = NMR_LitData()
-        form.populate_obj(nmr_form)
+        # nmr_form = NMR_LitData()
+        # form.populate_obj(nmr_form)
+        #
+        # db.session.add(nmr_form)
+        # db.session.commit()
 
-        db.session.add(nmr_form)
-        db.session.commit()
-
-        return redirect('/success')
+        # return redirect('/success')
 
     script = server_document(url=url)
     return render_template('user/nmr_lit_submit.html', form=form, script=script)
