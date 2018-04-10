@@ -99,27 +99,14 @@ def nmr_lit_submit():
 
     if request.method == 'POST':
 
-        try:
-            uploaded_file = request.files['file']
-            filename = secure_filename(uploaded_file.filename)
-            df = pd.read_csv(filename)
-            print(df)
-            redisConn = redis.from_url(os.environ.get("REDIS_URL"))
-            redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
-            return render_template(
-                "user/nmr_lit_submit.html",
-                form=form, script=script)
-
-        except e as error:
-            flash(f'Failed to read file given.\n{error}')
-
-        # nmr_form = NMR_LitData()
-        # form.populate_obj(nmr_form)
-        #
-        # db.session.add(nmr_form)
-        # db.session.commit()
-
-        # return redirect('/success')
+        data = form.csv.data
+        df = pd.read_csv(data)
+        print(df)
+        redisConn = redis.from_url(os.environ.get("REDIS_URL"))
+        redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
+        return render_template(
+            "user/nmr_lit_submit.html",
+            form=form, script=script)
 
     script = server_document(url=url)
     return render_template('user/nmr_lit_submit.html', form=form, script=script)
