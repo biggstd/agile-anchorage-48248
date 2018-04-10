@@ -1,25 +1,47 @@
 {% extends "_base.html" %}
 {% block content %}
 
+{% macro render_field(field) %}
+  <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
+
   <h1>Welcome, <em>{{ current_user.email }}</em>!</h1>
   <h3>This is the members-only page.</h3>
 
-  <h2>Enter NMR Literature Data</h2>
+  <div class="row">
+    <div class="column">
+      <h2>Enter NMR Literature Data</h2>
 
-  {% from "project.client.templates.user._formhelpers.html" import render_field %}
-  <form method=post>
-    <dl>
-      {{ render_field(form.name) }}
-      {{ render_field(form.csv) }}
-      {{ render_field(form.doi) }}
-      {{ render_field(form.Al_concentration) }}
-      {{ render_field(form.OH_concentration) }}
-      {{ render_field(form.CI_concentration) }}
-      {{ render_field(form.Al_ppm) }}
-      {{ render_field(form.counter_ion) }}
-      {{ render_field(form.Al_source) }}
-    </dl>
-    <p><input type=submit value=Register>
-  </form>
+      <form method=post>
+        <dl>
+          {{ render_field(form.name) }}
+          {{ render_field(form.csv) }}
+          {{ render_field(form.doi) }}
+          {{ render_field(form.Al_concentration) }}
+          {{ render_field(form.OH_concentration) }}
+          {{ render_field(form.CI_concentration) }}
+          {{ render_field(form.Al_ppm) }}
+          {{ render_field(form.counter_ion) }}
+          {{ render_field(form.Al_source) }}
+        </dl>
+        <p><input type=submit value=Submit>
+      </form>
+    </div>
+
+    <div class="column">
+      {{ script|safe }}
+    </div>
+  </div>
+
+
 
 {% endblock %}

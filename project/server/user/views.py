@@ -13,10 +13,12 @@ import os
 
 from wtforms import StringField
 from wtforms.validators import DataRequired
+from werkzeug.utils import secure_filename
 
 from project.server import bcrypt, db, BOKEH_PORTS
 from project.server.models import User, NMR_LitData
 from project.server.user.forms import LoginForm, RegisterForm
+import redis
 
 
 user_blueprint = Blueprint('user', __name__,)
@@ -79,7 +81,7 @@ def success():
 
 class MyForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
-    csv = FileField(validators=[FileRequired()])
+    csv = FileField()
     doi = StringField('DOI')
     Al_concentration = StringField('Al Molarity')
     OH_concentration = StringField('OH Molarity')
@@ -88,18 +90,41 @@ class MyForm(FlaskForm):
     counter_ion = StringField('Counter Ion')
     Al_source = StringField('Aluminum Source')
 
+
 @user_blueprint.route('/nmr_lit_submit/', methods=('GET', 'POST'))
-@login_required
+# @login_required
 def nmr_lit_submit():
     form = MyForm()
     if form.validate_on_submit():
+
+        # Get the csv from the requests object and
+        # read it with pandas.
+        if 'file' not in request.files:
+            flash('No file given.')
+
+        try:
+            uploaded_file = request.files['file']
+            filename = secure_filename(uploaded_file.filename)
+            df = pd.read_csv(filename)
+            redisConn = redis.from_url(os.environ.get("REDIS_URL"))
+            redisConn.set("key", df.to_msgpack(compress='zlib'))
+            url = "https://secret-cove-20095.herokuapp.com/nmrapp"
+            script = server_document(url=url)
+            return render_template(
+                "user/nmr_lit_submit.html",
+                form=form, script=script)
+
+        except e as error:
+            flash(f'Failed to read file given.\n{error}')
+
         nmr_form = NMR_LitData()
         form.populate_obj(nmr_form)
+
         db.session.add(nmr_form)
         db.session.commit()
 
         return redirect('/success')
-    return render_template('user/nmr_lit_submit.html', form=form)
+    return render_template('user/nmr_lit_submit.html', form=form, script=None)
 
 
 def create_data():
@@ -118,17 +143,17 @@ def create_data():
             "doi": "10.1016/j.talanta.2006.02.008"
         },
         "sipos_2006_talanta_fig_3_LiOH.csv": {
-            "counter_ion": "Na+",
+            "counter_ion": "Li+",
             "doi": "10.1016/j.talanta.2006.02.008"
         },
         "sipos_2006_talanta_fig_3_NaOH.csv": {
             "counter_ion": "Na+",
             "doi": "10.1016/j.talanta.2006.02.008"
         },
-        "sipos2006_RSC_table_1.csv": {
-            "counter_ion": "Na+",
-            "doi": "10.1039/b513357b"
-        },
+        # "sipos2006_RSC_table_1.csv": {
+        #     "counter_ion": "Cs+",
+        #     "doi": "10.1039/b513357b"
+        # },
     }
 
     # Create the entries in the appropriate databases.
@@ -153,32 +178,16 @@ def create_data():
 def bokeh_demo():
     # Generate the demo data.
     url = "https://secret-cove-20095.herokuapp.com/app"
-
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
 
 
-@user_blueprint.route('/nmrdemo/', methods=['GET'])
-# @login_required
-def nmrdemo():
-    # Generate the demo data.
-    create_data()
-    sql = '''SELECT * FROM nmr_lit_data'''
-    conn = db.engine.connect().connection
-    df = pd.read_sql_query(sql, conn)
-    # Pull all nmr data.
-    print(df)
-    # Write this to redis with a hash.
-    my_hash = "T35TH45H"
-    rd = redis.from_url(os.environ.get("REDIS_URL"))
-
-    # Save the data to the redis server with the hash as a key.
-    rd.set(my_hash, df.to_msgpack(compress='zlib'))
-
-    url = "https://secret-cove-20095.herokuapp.com/nmrapp"
-
-    script = server_document(url=url)
-    return render_template('user/bokeh_demo.html', script=script)
+# @user_blueprint.route('/nmrdemo/', methods=['GET'])
+# # @login_required
+# def nmrdemo():
+#     url = "https://secret-cove-20095.herokuapp.com/nmrapp"
+#     script = server_document(url=url)
+#     return render_template('user/bokeh_demo.html', script=script)
 
 
 @user_blueprint.route('/nmrsql/', methods=['GET'])
