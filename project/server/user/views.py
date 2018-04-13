@@ -17,7 +17,7 @@ from werkzeug.utils import secure_filename
 
 from project.server import bcrypt, db, BOKEH_APP_URL
 from project.server.models import User, NMR_LitData
-from project.server.user.forms import LoginForm, RegisterForm
+from project.server.user.forms import LoginForm, RegisterForm, CSVupload
 import redis
 
 
@@ -79,30 +79,21 @@ def success():
     return render_template('user/success.html')
 
 
-class MyForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
-    csv = FileField()
-    doi = StringField('DOI')
-
-
-@user_blueprint.route('/upload_data/', methods=('GET', 'POST'))
+@user_blueprint.route('/upload/', methods=('GET', 'POST'))
 # @login_required
-def nmr_lit_submit():
-    form = MyForm()
-    # url = "https://secret-cove-20095.herokuapp.com/nmrapp"
+def upload():
+    form = CSVupload()
     url = BOKEH_APP_URL + "/upload"
 
     if request.method == 'POST':
 
         data = form.csv.data
-        # print(data)
-        # print(type(data))
         df = pd.read_csv(data)
         redisConn = redis.from_url(os.environ.get("REDIS_URL"))
         redisConn.set("user_upload", df.to_msgpack(compress='zlib'))
         script = server_document(url=url)
         return render_template(
-            "user/nmr_lit_submit.html",
+            "user/upload.html",
             form=form, script=script)
 
     script = server_document(url=url)
@@ -182,5 +173,3 @@ def nmrsql():
 
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
-
-

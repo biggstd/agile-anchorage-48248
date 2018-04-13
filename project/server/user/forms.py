@@ -4,6 +4,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
+from flask_wtf.file import FileField
 
 
 class LoginForm(FlaskForm):
@@ -31,3 +32,9 @@ class RegisterForm(FlaskForm):
             EqualTo('password', message='Passwords must match.')
         ]
     )
+
+
+class CSVupload(FlaskForm):
+    name = StringField('name', validators=[DataRequired()])
+    csv = FileField()
+    doi = StringField('DOI')
