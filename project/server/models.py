@@ -42,6 +42,13 @@ class User(db.Model):
         return '<User {0}>'.format(self.email)
 
 
+
+
+# class NMR_Data(db.Model):
+#     """Base model for nmr data types"""
+#     pass
+
+
 class NMR_LitData(db.Model):
     """Database for literature nmr data points.
     """

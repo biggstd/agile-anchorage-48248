@@ -15,7 +15,7 @@ from wtforms import StringField
 from wtforms.validators import DataRequired
 from werkzeug.utils import secure_filename
 
-from project.server import bcrypt, db, BOKEH_PORTS
+from project.server import bcrypt, db, BOKEH_APP_URL
 from project.server.models import User, NMR_LitData
 from project.server.user.forms import LoginForm, RegisterForm
 import redis
@@ -83,35 +83,30 @@ class MyForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     csv = FileField()
     doi = StringField('DOI')
-    Al_concentration = StringField('Al Molarity')
-    OH_concentration = StringField('OH Molarity')
-    CI_concentration = StringField('Counter Ion Molarity')
-    Al_ppm = StringField('Al ppm')
-    counter_ion = StringField('Counter Ion')
-    Al_source = StringField('Aluminum Source')
 
 
-@user_blueprint.route('/nmr_lit_submit/', methods=('GET', 'POST'))
+@user_blueprint.route('/upload_data/', methods=('GET', 'POST'))
 # @login_required
 def nmr_lit_submit():
     form = MyForm()
-    url = "https://secret-cove-20095.herokuapp.com/nmrapp"
+    # url = "https://secret-cove-20095.herokuapp.com/nmrapp"
+    url = BOKEH_APP_URL + "/upload"
 
     if request.method == 'POST':
 
         data = form.csv.data
-        print(data)
-        print(type(data))
+        # print(data)
+        # print(type(data))
         df = pd.read_csv(data)
         redisConn = redis.from_url(os.environ.get("REDIS_URL"))
-        redisConn.set("csv_preview", df.to_msgpack(compress='zlib'))
+        redisConn.set("user_upload", df.to_msgpack(compress='zlib'))
         script = server_document(url=url)
         return render_template(
             "user/nmr_lit_submit.html",
             form=form, script=script)
 
     script = server_document(url=url)
-    return render_template('user/nmr_lit_submit.html', form=form, script=script)
+    return render_template('user/upload.html', form=form, script=script)
 
 
 def create_data():
@@ -182,6 +177,10 @@ def bokeh_demo():
 def nmrsql():
     # Generate the demo data.
     create_data()
-    url = "https://secret-cove-20095.herokuapp.com/nmrsql"
+    # url = "https://secret-cove-20095.herokuapp.com/nmrsql"
+    url = BOKEH_APP_URL + "/nmrsql"
+
     script = server_document(url=url)
     return render_template('user/bokeh_demo.html', script=script)
+
+
