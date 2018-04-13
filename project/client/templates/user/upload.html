@@ -14,23 +14,18 @@
   </dd>
 {% endmacro %}
 
-  <h1>Welcome, <em>{{ current_user.email }}</em>!</h1>
-  <h3>This is the members-only page.</h3>
+  <!-- <h1>Welcome, <em>{{ current_user.email }}</em>!</h1> -->
+  <!-- <h3>This is the members-only page.</h3> -->
 
   <div class="row">
-    <div class="column">
-      <h2>Enter NMR Literature Data</h2>
+    <h2>Enter NMR Literature Data</h2>
 
-      <form method=post enctype="multipart/form-data">
-        <dl>
-          {{ render_field(form.name) }}
-          {{ render_field(form.csv) }}
-        </dl>
-        <p><input type=submit value=Submit>
-      </form>
-    </div>
+    <form method=post enctype="multipart/form-data">
+        {{ render_field(form.name) render_field(form.csv) }}
+      <p><input type=submit value=Submit>
+    </form>
 
-    <div class="column">
+    <div class="row">
       {{ script|safe }}
     </div>
   </div>
