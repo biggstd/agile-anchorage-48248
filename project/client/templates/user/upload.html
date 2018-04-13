@@ -18,14 +18,23 @@
   <!-- <h3>This is the members-only page.</h3> -->
 
   <div class="row">
-    <h2>Enter NMR Literature Data</h2>
+    <div class="column">
+      <h2>Enter NMR Literature Data</h2>
+      <hr>
 
-    <form method=post enctype="multipart/form-data">
-        {{ render_field(form.name) render_field(form.csv) }}
-      <p><input type=submit value=Submit>
-    </form>
+      <form method=post enctype="multipart/form-data">
+        <div class="row">
+          {{ render_field(form.name) }}
+          &nbsp&nbsp&nbsp&nbsp&nbsp
+          {{ render_field(form.csv) }}
+        <p><input type=submit value=Submit>
+        </div>
+      </form>
+      <hr>
 
-    <div class="row">
+    </div>
+
+    <div class="column">
       {{ script|safe }}
     </div>
   </div>

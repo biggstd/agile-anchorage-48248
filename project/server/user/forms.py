@@ -35,6 +35,5 @@ class RegisterForm(FlaskForm):
 
 
 class CSVupload(FlaskForm):
-    name = StringField('name', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
     csv = FileField()
-    doi = StringField('DOI')
