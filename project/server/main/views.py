@@ -1,6 +1,7 @@
 # project/server/main/views.py
 
 from flask import render_template, Blueprint
+from bokeh.embed import server_document
 
 
 # from project.server.models import Ontology
@@ -19,6 +20,13 @@ def home():
 def about():
     return render_template("main/about.html")
 
+
+@main_blueprint.route('/bokeh_demo/', methods=['GET'])
+def bokeh_demo():
+    # Generate the demo data.
+    url = "https://secret-cove-20095.herokuapp.com/NMRDemo"
+    script = server_document(url=url)
+    return render_template('user/bokeh_demo.html', script=script)
 
 # @main_blueprint.route("/data/")
 # def data():

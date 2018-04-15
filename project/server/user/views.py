@@ -6,7 +6,6 @@ from flask import render_template, Blueprint, url_for, \
 from flask_login import login_user, logout_user, login_required
 # from flask_wtf import FlaskForm
 # from flask_wtf.file import FileField, FileRequired
-from bokeh.embed import server_document
 # import pandas as pd
 import redis
 # import os
@@ -146,13 +145,13 @@ def success():
 #         db.session.commit()
 
 
-@user_blueprint.route('/bokeh_demo/', methods=['GET'])
-# @login_required
-def bokeh_demo():
-    # Generate the demo data.
-    url = "https://secret-cove-20095.herokuapp.com/NMRDemo"
-    script = server_document(url=url)
-    return render_template('user/bokeh_demo.html', script=script)
+# @user_blueprint.route('/bokeh_demo/', methods=['GET'])
+# # @login_required
+# def bokeh_demo():
+#     # Generate the demo data.
+#     url = "https://secret-cove-20095.herokuapp.com/NMRDemo"
+#     script = server_document(url=url)
+#     return render_template('user/bokeh_demo.html', script=script)
 
 
 # @user_blueprint.route('/nmrdemo/', methods=['GET'])
