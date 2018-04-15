@@ -11,24 +11,11 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from pymodm import connect
 
-from bokeh.embed import server_document
-from bokeh.layouts import column
-from bokeh.models import ColumnDataSource, Slider
-from bokeh.plotting import figure
-from bokeh.server.server import Server
-from bokeh.application import Application
-from bokeh.application.handlers import DirectoryHandler
-from bokeh.themes import Theme
-from tornado.ioloop import IOLoop
-from threading import Thread
-
-
-# import pandas as pd
-
+connect(os.getenv("MONGODB_URI"))
 
 BOKEH_APP_URL = os.getenv("BOKEH_APP_URL")
-
 # instantiate the extensions
 login_manager = LoginManager()
 bcrypt = Bcrypt()

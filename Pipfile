@@ -22,6 +22,7 @@ gunicorn = "*"
 pandas = "*"
 redis = "*"
 "psycopg2-binary" = "*"
+pymodm = "*"
 
 [dev-packages]
 coverage = "*"

@@ -1,9 +1,25 @@
 # project/server/models.py
 
+"""
+Models to add:
+
+Comment
+OntologySource
+OntologyAnnotation
+Publication
+Person
+
+
+"""
 
 import datetime
 
 from flask import current_app
+
+import os
+
+import pymodm
+from pymodm import MongoModel, fields
 
 from project.server import db, bcrypt
 
@@ -42,13 +58,6 @@ class User(db.Model):
         return '<User {0}>'.format(self.email)
 
 
-
-
-# class NMR_Data(db.Model):
-#     """Base model for nmr data types"""
-#     pass
-
-
 class NMR_LitData(db.Model):
     """Database for literature nmr data points.
     """
@@ -62,3 +71,88 @@ class NMR_LitData(db.Model):
     Al_ppm = db.Column(db.Numeric(), nullable=True)
     counter_ion = db.Column(db.String(255), nullable=True)
     Al_source = db.Column(db.String(255), nullable=True)
+
+
+# ----------------------------------
+# MongoDB Models for Metadata
+# ----------------------------------
+
+# class DemoModel(MongoModel):
+    # name = fields.CharField()
+
+
+
+# ----------------------------------
+# Abstract Level
+# ----------------------------------
+
+
+class Ontology(MongoModel):
+    name = fields.CharField()
+    descriptor = fields.CharField()
+
+
+class Quantitative(MongoModel):
+    factor_name = fields.ReferenceField(Ontology)
+    single_value = fields.FloatField()
+    mult_values = fields.ListField()
+
+
+class Qualitatives(MongoModel):
+    factor_name = fields.ReferenceField(Ontology)
+    single_value = fields.FloatField()
+    multi_values = fields.ListField()
+
+
+class Species(MongoModel):
+    factor_name = fields.ReferenceField(Ontology)
+    sub_species = fields.DictField()
+    qualitators = fields.ReferenceField(Qualitatives)
+
+
+# ----------------------------------
+# Sample Level
+# ----------------------------------
+
+
+class MaterialSource(MongoModel):
+    factor_name = fields.ReferenceField(Ontology)
+    qual_properties = fields.ReferenceField(Ontology)
+    quant_properties = fields.ReferenceField(Quantitative)
+
+
+class Sample(MongoModel):
+    name = fields.CharField()
+    sources = fields.ListField()
+    species = fields.ListField()
+
+
+# ----------------------------------
+# Protocol Level
+# ----------------------------------
+
+
+class Protocol(MongoModel):
+    factor_name = fields.CharField()
+    unit_measured = fields.ReferenceField(Ontology)
+    instrument = fields.CharField()
+
+
+# ----------------------------------
+# Data Level
+# ----------------------------------
+
+
+class DataFile(MongoModel):
+    data_file = fields.FileField()
+
+
+# ----------------------------------
+# Experiment Level
+# ----------------------------------
+
+class Experiment(MongoModel):
+    name = fields.CharField()
+    sample_list = fields.ListField()
+    protocol = fields.ReferenceField(Protocol)
+    data_set = fields.ReferenceField(DataFile)
