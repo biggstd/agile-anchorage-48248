@@ -26,7 +26,7 @@ def bokeh_demo():
     # Generate the demo data.
     url = "https://secret-cove-20095.herokuapp.com/NMRDemo"
     script = server_document(url=url)
-    return render_template('user/bokeh_demo.html', script=script)
+    return render_template('main/bokeh_demo.html', script=script)
 
 # @main_blueprint.route("/data/")
 # def data():
