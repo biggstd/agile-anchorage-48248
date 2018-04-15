@@ -4,21 +4,21 @@
 from flask import render_template, Blueprint, url_for, \
     redirect, flash, request
 from flask_login import login_user, logout_user, login_required
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
+# from flask_wtf import FlaskForm
+# from flask_wtf.file import FileField, FileRequired
 from bokeh.embed import server_document
-import pandas as pd
+# import pandas as pd
 import redis
-import os
+# import os
 
-from wtforms import StringField
-from wtforms.validators import DataRequired
-from werkzeug.utils import secure_filename
+# from wtforms import StringField
+# from wtforms.validators import DataRequired
+# from werkzeug.utils import secure_filename
 
 from project.server import bcrypt, db, BOKEH_APP_URL
-from project.server.models import User, NMR_LitData
-from project.server.user.forms import LoginForm, RegisterForm, CSVupload
-import redis
+from project.server.models import User
+from project.server.user.forms import LoginForm, RegisterForm
+# import redis
 
 
 user_blueprint = Blueprint('user', __name__,)
@@ -146,7 +146,7 @@ def success():
 #         db.session.commit()
 
 
-@user_blueprint.route('/demo/', methods=['GET'])
+@user_blueprint.route('/bokeh_demo/', methods=['GET'])
 # @login_required
 def bokeh_demo():
     # Generate the demo data.

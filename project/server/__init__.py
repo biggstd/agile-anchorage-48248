@@ -11,9 +11,9 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-from pymodm import connect
+# from pymodm import connect
 
-connect(os.getenv("MONGODB_URI"))
+# connect(os.getenv("MONGODB_URI"))
 
 BOKEH_APP_URL = os.getenv("BOKEH_APP_URL")
 # instantiate the extensions
