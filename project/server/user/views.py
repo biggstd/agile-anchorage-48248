@@ -14,9 +14,22 @@ import redis
 # from wtforms.validators import DataRequired
 # from werkzeug.utils import secure_filename
 
+<<<<<<< Updated upstream
 from project.server import bcrypt, db, BOKEH_APP_URL
 from project.server.models import User
 from project.server.user.forms import LoginForm, RegisterForm
+=======
+from project.server import bcrypt, db, BOKEH_PORTS
+from project.server.ontologies import ONTOLOGY_ANNOTATIONS
+from project.server.models import User, NMR_LitData
+from project.server.user.forms import (
+    LoginForm,
+    RegisterForm,
+    OntologyAnnotationForm,
+    CombinedFactorForm,
+    NMRUploadForm,
+)
+>>>>>>> Stashed changes
 # import redis
 
 
@@ -154,21 +167,17 @@ def success():
 #     return render_template('user/bokeh_demo.html', script=script)
 
 
-# @user_blueprint.route('/nmrdemo/', methods=['GET'])
-# # @login_required
-# def nmrdemo():
-#     url = "https://secret-cove-20095.herokuapp.com/nmrapp"
-#     script = server_document(url=url)
-#     return render_template('user/bokeh_demo.html', script=script)
+@user_blueprint.route('/nmrsql/', methods=['GET'])
+# @login_required
+def nmrsql():
+    # Generate the demo data.
+    create_data()
+    url = "https://secret-cove-20095.herokuapp.com/nmrsql"
+    script = server_document(url=url)
+    return render_template('user/bokeh_demo.html', script=script)
 
 
-# @user_blueprint.route('/nmrsql/', methods=['GET'])
-# # @login_required
-# def nmrsql():
-#     # Generate the demo data.
-#     create_data()
-#     # url = "https://secret-cove-20095.herokuapp.com/nmrsql"
-#     url = BOKEH_APP_URL + "/nmrsql"
-#
-#     script = server_document(url=url)
-#     return render_template('user/bokeh_demo.html', script=script)
+@user_blueprint.route('/nmr_upload/', methods=('GET', 'POST'))
+def nmr_upload():
+    form = NMRUploadForm()
+    return render_template('user/NMRupload.html', form=form)

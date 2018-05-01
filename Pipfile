@@ -22,7 +22,7 @@ gunicorn = "*"
 pandas = "*"
 redis = "*"
 "psycopg2-binary" = "*"
-pymodm = "*"
+isatools = "*"
 
 [dev-packages]
 coverage = "*"

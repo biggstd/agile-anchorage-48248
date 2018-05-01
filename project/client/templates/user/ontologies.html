@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<h3> Decimal Factors </h3>
+
+<form method="POST" action="/">
+    {{ form.hidden_tag() }}
+    <br/>
+    {% for entry in form.decimal_factors %}
+      {{ entry.label }}
+      {{ entry.factor_value() }}
+      {{ entry.factor_type() }}
+    {% endfor %}
+    <!-- <input type="submit" value="Go"> -->
+</form>
+
+{% endblock %}
