@@ -81,7 +81,8 @@ def create_sample():
     '''Allows a user to create a sample and sumbit it to the MongoDB.'''
 
     # Build the URI for the Bokeh server.
-    url = BOKEH_APP_URL + 'sample_creator'
+    url = BOKEH_APP_URL + 'sample_creator/'
+    print(url)
 
     def get_bokeh_values(bokeh_session):
         '''Pulls user submitted values and selections from the bokeh
