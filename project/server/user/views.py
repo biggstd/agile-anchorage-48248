@@ -2,35 +2,20 @@
 
 
 from flask import render_template, Blueprint, url_for, \
-    redirect, flash, request
+    redirect, flash, request, session, make_response
 from flask_login import login_user, logout_user, login_required
-# from flask_wtf import FlaskForm
-# from flask_wtf.file import FileField, FileRequired
-# import pandas as pd
-import redis
-# import os
+import bokeh
+import bokeh.client
+import bokeh.embed
 
-# from wtforms import StringField
-# from wtforms.validators import DataRequired
-# from werkzeug.utils import secure_filename
+import json
 
-<<<<<<< Updated upstream
-from project.server import bcrypt, db, BOKEH_APP_URL
+from project.server import bcrypt, db, BOKEH_APP_URL, REDIS
 from project.server.models import User
 from project.server.user.forms import LoginForm, RegisterForm
-=======
-from project.server import bcrypt, db, BOKEH_PORTS
-from project.server.ontologies import ONTOLOGY_ANNOTATIONS
-from project.server.models import User, NMR_LitData
-from project.server.user.forms import (
-    LoginForm,
-    RegisterForm,
-    OntologyAnnotationForm,
-    CombinedFactorForm,
-    NMRUploadForm,
-)
->>>>>>> Stashed changes
-# import redis
+# from project.server import bcrypt, db
+from project.server.models import User
+
 
 
 user_blueprint = Blueprint('user', __name__,)
@@ -91,93 +76,67 @@ def success():
     return render_template('user/success.html')
 
 
-# @user_blueprint.route('/upload/', methods=('GET', 'POST'))
-# # @login_required
-# def upload():
-#     form = CSVupload()
-#     url = BOKEH_APP_URL + "/upload"
-#
-#     if request.method == 'POST':
-#
-#         data = form.csv.data
-#         df = pd.read_csv(data)
-#         redisConn = redis.from_url(os.environ.get("REDIS_URL"))
-#         redisConn.set("user_upload", df.to_msgpack(compress='zlib'))
-#         script = server_document(url=url)
-#         return render_template(
-#             "user/upload.html",
-#             form=form, script=script)
-#
-#     script = server_document(url=url)
-#     return render_template('user/upload.html', form=form, script=script)
+@user_blueprint.route('/create_sample/', methods=('GET', 'POST'))
+def create_sample():
+    '''Allows a user to create a sample and sumbit it to the MongoDB.'''
 
+    # Build the URI for the Bokeh server.
+    url = BOKEH_APP_URL + 'sample_creator'
 
-# def create_data():
-#     """Creates sample data."""
-#     db.drop_all()
-#     db.create_all()
-#     # Read from some local cvs.
-#     base_path = "project/tests/demodata/"
-#     demo_lit_csvs = {
-#         "sipos_2006_talanta_fig_2.csv": {
-#             "counter_ion": "Na+",
-#             "doi": "10.1016/j.talanta.2006.02.008"
-#         },
-#         "sipos_2006_talanta_fig_3_KOH.csv": {
-#             "counter_ion": "K+",
-#             "doi": "10.1016/j.talanta.2006.02.008",
-#             "Al_concentration": 0.005
-#         },
-#         "sipos_2006_talanta_fig_3_LiOH.csv": {
-#             "counter_ion": "Li+",
-#             "doi": "10.1016/j.talanta.2006.02.008",
-#             "Al_concentration": 0.005
-#         },
-#         "sipos_2006_talanta_fig_3_NaOH.csv": {
-#             "counter_ion": "Na+",
-#             "doi": "10.1016/j.talanta.2006.02.008",
-#             "Al_concentration": 0.005
-#         },
-#         "sipos2006_RSC_table_1.csv": {
-#             "counter_ion": "Cs+",
-#             "doi": "10.1039/b513357b",
-#             "Al_concentration": 3.0
-#         },
-#     }
-#
-#     # Create the entries in the appropriate databases.
-#     # Al_concentration,OH_concentration,Al_ppm
-#     for path, prop_dict in demo_lit_csvs.items():
-#         df = pd.read_csv(base_path + path)
-#         # Iterate through a zip of the matched values, and
-#         # populate them.
-#         for idx, row in df.iterrows():
-#             row = row.to_dict()
-#             nmr_entry = NMR_LitData(**row, **prop_dict)
-#             db.session.add(nmr_entry)
-#         db.session.commit()
+    def get_bokeh_values(bokeh_session):
+        '''Pulls user submitted values and selections from the bokeh
+        interface.
+        '''
+        # Get all the information from the variable number of fields.
+        output_dict = dict()
 
+        target_layout = bokeh_session.document.roots[0].children[3].children
 
-# @user_blueprint.route('/bokeh_demo/', methods=['GET'])
-# # @login_required
-# def bokeh_demo():
-#     # Generate the demo data.
-#     url = "https://secret-cove-20095.herokuapp.com/NMRDemo"
-#     script = server_document(url=url)
-#     return render_template('user/bokeh_demo.html', script=script)
+        # The column of sample rows.
+        for rc, sample_row in enumerate(target_layout):
+            # The widgetboxes containing bokeh inputs.
+            for bc, widgetbox in enumerate(sample_row.children):
+                # The individual bokeh inputs.
+                for ic, input_widget in enumerate(widgetbox.children):
+                    dict_label = f'{rc}.{bc}.{ic}.{input_widget.name}'
+                    output_dict[dict_label] = input_widget.value
 
+        return json.dumps(output_dict)
 
-@user_blueprint.route('/nmrsql/', methods=['GET'])
-# @login_required
-def nmrsql():
-    # Generate the demo data.
-    create_data()
-    url = "https://secret-cove-20095.herokuapp.com/nmrsql"
-    script = server_document(url=url)
-    return render_template('user/bokeh_demo.html', script=script)
+    # Check if this is a submission. If so render the submitted object.
+    if request.method == 'POST':
 
+        # Get the Bokeh apps session id.
+        curr_session_id = request.cookies.get('user_session_id')
 
-@user_blueprint.route('/nmr_upload/', methods=('GET', 'POST'))
-def nmr_upload():
-    form = NMRUploadForm()
-    return render_template('user/NMRupload.html', form=form)
+        # Pull the bokeh session by this id.
+        curr_session = bokeh.client.pull_session(
+            session_id=curr_session_id, url=url)
+
+        # Build the script with the session id.
+        script = bokeh.embed.server_session(
+            model=None, session_id=curr_session_id, url=url)
+
+        # Read the values therin.
+        sample_json = get_bokeh_values(curr_session)
+
+        # print(vars(request))
+        return render_template('user/create_sample.html', script=script,
+                               sample_json=sample_json)
+
+    # Build / get the bokeh session.
+    curr_session = bokeh.client.pull_session(url=url)
+
+    # Save the current session id as a key.
+    curr_session_id = curr_session.id
+
+    # Build the script for rendering.
+    script = bokeh.embed.server_session(
+        model=None, session_id=curr_session_id, url=url)
+
+    # Build the response that will render a template and set a cookie value.
+    response = make_response(
+        render_template('user/create_sample.html', script=script))
+    response.set_cookie('user_session_id', curr_session_id)
+
+    return response

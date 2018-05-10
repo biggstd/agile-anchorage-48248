@@ -10,12 +10,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+import redis
 # from pymodm import connect
 
 # connect(os.getenv("MONGODB_URI"))
 
 BOKEH_APP_URL = os.getenv("BOKEH_APP_URL")
+REDIS = redis.from_url(os.environ.get("REDIS_URL"))
+
 # instantiate the extensions
 login_manager = LoginManager()
 bcrypt = Bcrypt()
