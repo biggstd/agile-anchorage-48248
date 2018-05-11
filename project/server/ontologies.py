@@ -4,6 +4,7 @@ from isatools.model import (
     Investigation,
     OntologySource,
     OntologyAnnotation,
+    Source
 )
 
 
@@ -68,4 +69,36 @@ FACTOR_FACTORS = [
     ),
 ]
 
-# STRING_FACTORS
+
+MATERIAL_SOURCES = [
+    dict(
+        name='Al wire',
+        type=Source(
+            name='Aluminum Wire',
+        )
+    ),
+    dict(
+        name='Solid Sodium Hydroxide',
+        type=Source(
+            name='Solid Sodium Hydroxide',
+        )
+    ),
+    dict(
+        name='Solid Potassium Hydroxide',
+        type=Source(
+            name='Solid Potassium Hydroxide',
+        )
+    ),
+    dict(
+        name='Solid Caesium Hydroxide',
+        type=Source(
+            name='Solid Caesium Hydroxide',
+        )
+    ),
+    dict(
+        name='Solid Lithium Hydroxide',
+        type=Source(
+            name='Solid Lithium Hydroxide',
+        )
+    ),
+]

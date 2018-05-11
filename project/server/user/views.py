@@ -15,7 +15,8 @@ from project.server.models import User
 from project.server.user.forms import LoginForm, RegisterForm
 # from project.server import bcrypt, db
 from project.server.models import User
-
+from project.server.ontologies import MATERIAL_SOURCES
+from project.server.isa_utils import build_isa_sample, jsonify_isa_object
 
 
 user_blueprint = Blueprint('user', __name__,)
@@ -77,6 +78,7 @@ def success():
 
 
 @user_blueprint.route('/create_sample/', methods=('GET', 'POST'))
+# @login_required
 def create_sample():
     '''Allows a user to create a sample and sumbit it to the MongoDB.'''
 
@@ -89,9 +91,11 @@ def create_sample():
         interface.
         '''
         # Get all the information from the variable number of fields.
-        output_dict = dict()
+        output = list()
 
-        target_layout = bokeh_session.document.roots[0].children[3].children
+        target_layout = bokeh_session.document.roots[0].children[4].children
+        sample_name = bokeh_session.document.roots[0].children[0].children[0]\
+            .value
 
         # The column of sample rows.
         for rc, sample_row in enumerate(target_layout):
@@ -99,10 +103,13 @@ def create_sample():
             for bc, widgetbox in enumerate(sample_row.children):
                 # The individual bokeh inputs.
                 for ic, input_widget in enumerate(widgetbox.children):
-                    dict_label = f'{rc}.{bc}.{ic}.{input_widget.name}'
-                    output_dict[dict_label] = input_widget.value
+                    output.append(input_widget.value)
 
-        return json.dumps(output_dict)
+        output_dict = dict(
+            name=sample_name,
+            derives_from=output
+        )
+        return output_dict
 
     # Check if this is a submission. If so render the submitted object.
     if request.method == 'POST':
@@ -119,7 +126,10 @@ def create_sample():
             model=None, session_id=curr_session_id, url=url)
 
         # Read the values therin.
-        sample_json = get_bokeh_values(curr_session)
+        sample_json = str(build_isa_sample(
+            get_bokeh_values(curr_session)))
+
+        print(jsonify_isa_object(sample_json))
 
         # print(vars(request))
         return render_template('user/create_sample.html', script=script,
