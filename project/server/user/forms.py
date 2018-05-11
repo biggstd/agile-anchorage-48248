@@ -5,7 +5,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from flask_wtf.file import FileField
-from wtforms import IntegerField, RadioField, StringField, PasswordField, SelectField, DecimalField, FormField, FieldList
+from wtforms import (IntegerField, RadioField, StringField, PasswordField,
+    SelectField, DecimalField, FormField, FieldList)
+from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
 
@@ -42,3 +44,9 @@ class RegisterForm(FlaskForm):
             EqualTo('password', message='Passwords must match.')
         ]
     )
+
+
+class OntologySourceForm(FlaskForm):
+    name = StringField('Name', [DataRequired()])
+    description = StringField(
+        'Description', [DataRequired()], widget=TextArea())

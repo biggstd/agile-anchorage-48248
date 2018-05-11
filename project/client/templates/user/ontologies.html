@@ -2,17 +2,12 @@
 
 {% block content %}
 
-<h3> Decimal Factors </h3>
+<h3> Ontologies </h3>
 
-<form method="POST" action="/">
-    {{ form.hidden_tag() }}
-    <br/>
-    {% for entry in form.decimal_factors %}
-      {{ entry.label }}
-      {{ entry.factor_value() }}
-      {{ entry.factor_type() }}
+    {% for ont_source in ont_sources %}
+      <h5>{{ ont_source.name }}</h5>
+      <p>{{ ont_source.description }}</p>
     {% endfor %}
-    <!-- <input type="submit" value="Go"> -->
-</form>
+
 
 {% endblock %}

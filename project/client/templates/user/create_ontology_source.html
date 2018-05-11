@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<div class="body-content">
+
+  <h1>Sample Creator</h1>
+
+  <p>Create an Ontology Source for use in uploading data.</p>
+
+  <div class="row">
+
+    <div class="column">
+
+      <form method="POST" action="/new_ontology_source">
+          {{ form.hidden_tag() }}
+          {{ form.name.label }} {{ form.name(size=20) }}
+          {{ form.description.label }} {{ form.description(cols="50", rows="5") }}
+        <input type="submit" value="Go">
+      </form>
+
+    </div>
+
+    <div class="column">
+      <p>
+      {{ sample_json }}
+    </p>
+    </div>
+
+  </div>
+
+</div>
+
+
+{% endblock %}
+

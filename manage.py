@@ -8,7 +8,7 @@ import os
 
 from flask.cli import FlaskGroup
 
-from project.server import create_app, db
+from project.server import create_app, mongo # db
 from project.server.models import User
 import subprocess
 import sys
@@ -32,15 +32,15 @@ COV.start()
 
 @cli.command()
 def create_db():
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+    mongo.db.drop_all()
+    mongo.db.create_all()
+    mongo.db.session.commit()
 
 
 @cli.command()
 def drop_db():
     """Drops the db tables."""
-    db.drop_all()
+    mongo.db.drop_all()
 
 
 @cli.command()

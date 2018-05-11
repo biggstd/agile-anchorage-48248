@@ -8,12 +8,10 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+#from flask_sqlalchemy import SQLAlchemy
+#from flask_migrate import Migrate
 import redis
-# from pymodm import connect
-
-# connect(os.getenv("MONGODB_URI"))
+from flask_pymongo import PyMongo
 
 BOKEH_APP_URL = os.getenv("BOKEH_APP_URL")
 REDIS = redis.from_url(os.environ.get("REDIS_URL"))
@@ -23,8 +21,9 @@ login_manager = LoginManager()
 bcrypt = Bcrypt()
 toolbar = DebugToolbarExtension()
 bootstrap = Bootstrap()
-db = SQLAlchemy()
-migrate = Migrate()
+mongo = PyMongo()
+#db = SQLAlchemy()
+#migrate = Migrate()
 
 
 def create_app(script_info=None):
@@ -35,20 +34,22 @@ def create_app(script_info=None):
         template_folder='../client/templates',
         static_folder='../client/static'
     )
-
+    
     # set config
     app_settings = os.getenv(
         'APP_SETTINGS', 'project.server.config.DevelopmentConfig')
     app.config.from_object(app_settings)
 
+    # Set up PyMongo database.
+    mongo.init_app(app)
 
     # set up extensions
     login_manager.init_app(app)
     bcrypt.init_app(app)
     toolbar.init_app(app)
     bootstrap.init_app(app)
-    db.init_app(app)
-    migrate.init_app(app, db)
+    #db.init_app(app)
+    #migrate.init_app(app, db)
 
     # register blueprints
     from project.server.user.views import user_blueprint

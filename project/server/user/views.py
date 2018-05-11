@@ -8,14 +8,15 @@ import bokeh
 import bokeh.client
 import bokeh.embed
 
+import isatools.model as isa
 import json
 
-from project.server import bcrypt, db, BOKEH_APP_URL, REDIS
+from project.server import bcrypt, BOKEH_APP_URL, mongo
 from project.server.models import User
-from project.server.user.forms import LoginForm, RegisterForm
+from project.server.user.forms import (LoginForm, RegisterForm,
+    OntologySourceForm)
 # from project.server import bcrypt, db
-from project.server.models import User
-from project.server.ontologies import MATERIAL_SOURCES
+# from project.server.ontologies import MATERIAL_SOURCES
 from project.server.isa_utils import build_isa_sample, jsonify_isa_object
 
 
@@ -43,7 +44,9 @@ def register():
 
 @user_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+
     form = LoginForm(request.form)
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(
@@ -135,19 +138,52 @@ def create_sample():
         return render_template('user/create_sample.html', script=script,
                                sample_json=sample_json)
 
-    # Build / get the bokeh session.
-    curr_session = bokeh.client.pull_session(url=url)
+    try:
+        # Build / get the bokeh session.
+        curr_session = bokeh.client.pull_session(url=url)
 
-    # Save the current session id as a key.
-    curr_session_id = curr_session.id
+        # Save the current session id as a key.
+        curr_session_id = curr_session.id
 
-    # Build the script for rendering.
-    script = bokeh.embed.server_session(
-        model=None, session_id=curr_session_id, url=url)
+        # Build the script for rendering.
+        script = bokeh.embed.server_session(
+            model=None, session_id=curr_session_id, url=url)
 
-    # Build the response that will render a template and set a cookie value.
-    response = make_response(
-        render_template('user/create_sample.html', script=script))
-    response.set_cookie('user_session_id', curr_session_id)
+        # Build the response that to render a template and set a cookie value.
+        response = make_response(
+            render_template('user/create_sample.html', script=script))
+        response.set_cookie('user_session_id', curr_session_id)
+
+    except IOError as error:
+        response = make_response(
+            render_template('user/create_sample.html', script=None))
 
     return response
+
+
+@user_blueprint.route('/new_ontology_source', methods=['GET', 'POST'])
+def new_ontology_source():
+    '''Create a new Ontology Source.
+    '''
+
+    form = OntologySourceForm(request.form)
+
+    if form.validate_on_submit():
+        new_source = isa.OntologySource(name=form.name.data,
+                                        description=form.description.data)
+
+        json_source = jsonify_isa_object(new_source)
+        source_dict = json.loads(json_source)
+        mongo.db.ontology_sources.insert_one(source_dict)
+
+        flash('Created a new ontology source.', 'success')
+
+        return redirect(url_for("user.ontologies"))
+
+    return render_template('user/create_ontology_source.html', form=form)
+
+
+@user_blueprint.route('/ontologies')
+def ontologies():
+    ont_sources = mongo.db.ontology_sources.find()
+    return render_template('user/ontologies.html', ont_sources=ont_sources)
